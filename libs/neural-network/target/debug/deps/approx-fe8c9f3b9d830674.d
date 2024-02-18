@@ -1,0 +1,11 @@
+D:\Code\Simulvolve\libs\neural-network\target\debug\deps\libapprox-fe8c9f3b9d830674.rmeta: C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\lib.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\abs_diff_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\relative_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\ulps_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\macros.rs
+
+D:\Code\Simulvolve\libs\neural-network\target\debug\deps\libapprox-fe8c9f3b9d830674.rlib: C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\lib.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\abs_diff_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\relative_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\ulps_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\macros.rs
+
+D:\Code\Simulvolve\libs\neural-network\target\debug\deps\approx-fe8c9f3b9d830674.d: C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\lib.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\abs_diff_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\relative_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\ulps_eq.rs C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\macros.rs
+
+C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\lib.rs:
+C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\abs_diff_eq.rs:
+C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\relative_eq.rs:
+C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\ulps_eq.rs:
+C:\Users\Gaboubichou\.cargo\registry\src\index.crates.io-6f17d22bba15001f\approx-0.5.1\src\macros.rs:
