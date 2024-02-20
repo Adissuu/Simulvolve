@@ -1,10 +1,13 @@
 use rand::seq::SliceRandom;
-use rand::Rng;
+//use rand::Rng;
 use rand::RngCore;
-use std::iter::FromIterator;
+//use std::iter::FromIterator;
+
+pub trait Individual {
+    fn fitness(&self) -> f32;
+}
 
 pub struct GeneticAlgorithm;
-pub struct RouletteWheelSelection;
 
 impl GeneticAlgorithm {
     pub fn new() -> Self {
@@ -25,6 +28,14 @@ impl GeneticAlgorithm {
     }
 }
 
+pub trait SelectionMethod {
+    fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
+    where
+        I: Individual;
+}
+
+pub struct RouletteWheelSelection;
+
 impl RouletteWheelSelection {
     pub fn new() -> Self {
         Self
@@ -41,12 +52,34 @@ impl SelectionMethod for RouletteWheelSelection {
             .expect("got an empty population")
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+    use std::collections::BTreeMap;
+
+    #[derive(Clone, Debug)]
+    pub struct TestIndividual {
+        fitness: f32,
+    }
+
+    impl TestIndividual {
+        pub fn new(fitness: f32) -> Self {
+            Self { fitness }
+        }
+    }
+
+    impl Individual for TestIndividual {
+        fn fitness(&self) -> f32 {
+            self.fitness
+        }
+    }
 
     #[test]
     fn test() {
+        let method = RouletteWheelSelection::new();
         let mut rng = ChaCha8Rng::from_seed(Default::default());
 
         let population = vec![
@@ -56,28 +89,15 @@ mod tests {
             TestIndividual::new(4.0),
         ];
 
-        let actual = BTreeMap::new();
+        let mut actual = BTreeMap::new();
 
-        assert!(actual.is_none());
-    }
-}
+        for _ in 0..100 {
+            let fitness = method.select(&mut rng, &population).fitness() as i32;
 
-#[cfg(test)]
-#[derive(Clone, Debug)]
-pub struct TestIndividual {
-    fitness: f32,
-}
+            *actual.entry(fitness).or_insert(0) += 1;
+        }
 
-#[cfg(test)]
-impl TestIndividual {
-    pub fn new(&self) -> Self {
-        Self { fitness }
-    }
-}
-
-#[cfg(test)]
-impl Individual for TestIndividual {
-    fn fitness(&self) -> f32 {
-        self.fitness
+        let expected = BTreeMap::from_iter(vec![(1, 11), (2, 18), (3, 36), (4, 35)]);
+        assert_eq!(actual, expected);
     }
 }
