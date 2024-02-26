@@ -1,4 +1,7 @@
+use crate::Chromosome;
+
 pub trait Individual {
+    fn chromosome(&self) -> &Chromosome;
     fn fitness(&self) -> f32;
 }
 
@@ -17,6 +20,9 @@ impl TestIndividual {
 
 #[cfg(test)]
 impl Individual for TestIndividual {
+    fn chromosome(&self) -> &Chromosome {
+        todo!("Implement `chromosome` for `TestIndividual`")
+    }
     fn fitness(&self) -> f32 {
         self.fitness
     }

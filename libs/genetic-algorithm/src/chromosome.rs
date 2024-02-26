@@ -1,4 +1,3 @@
-use std::iter::FromIterator;
 use std::ops::Index;
 
 #[derive(Clone, Debug)]
