@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build:wasm": "wasm-pack build libs/simulation-wasm --release --target web",
-    "build": "next build",
+    "build": "wasm-pack build libs/simulation-wasm --release --target web next build ",
     "start": "next start",
     "lint": "next lint"
   },
