@@ -52,6 +52,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build WebAssembly
-      run: npm run build:wasm
+      run: npm run build:libs/simulation-wasm
     - name: Build NextJS application
       run: npm run build
