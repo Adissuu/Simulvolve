@@ -1,0 +1,30 @@
+{
+  "name": "simulvolve",
+  "version": "1.4.0",
+  "scripts": {
+    "dev": "next dev",
+    "build:wasm": "wasm-pack build libs/simulation-wasm --release --target web",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
+    "autoprefixer": "^10.4.17",
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.5",
+    "next": "13.0.5",
+    "next-themes": "^0.2.1",
+    "postcss": "^8.4.35",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "4.9.3",
+    "wasm": "file:libs/simulation-wasm/pkg",
+    "wasm-pack": "^0.12.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

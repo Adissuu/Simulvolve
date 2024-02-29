@@ -1,0 +1,1 @@
+D:\Code\Simulvolve\libs\simulation-wasm\target\wasm32-unknown-unknown\release\lib_simulation_wasm.wasm: D:\Code\Simulvolve\libs\simulation\src\animal.rs D:\Code\Simulvolve\libs\simulation\src\food.rs D:\Code\Simulvolve\libs\simulation\src\lib.rs D:\Code\Simulvolve\libs\simulation\src\world.rs D:\Code\Simulvolve\libs\simulation-wasm\src\lib.rs

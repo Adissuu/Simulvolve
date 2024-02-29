@@ -1,0 +1,1 @@
+D:\Code\Simulvolve\libs\simulation-wasm\target\debug\lib_simulation_wasm.dll: D:\Code\Simulvolve\libs\simulation\src\animal.rs D:\Code\Simulvolve\libs\simulation\src\food.rs D:\Code\Simulvolve\libs\simulation\src\lib.rs D:\Code\Simulvolve\libs\simulation\src\world.rs D:\Code\Simulvolve\libs\simulation-wasm\src\lib.rs
