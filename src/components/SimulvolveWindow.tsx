@@ -13,6 +13,9 @@ export const SimulvolveWindow = () => {
   console.log(animals)
 
   return (
-    <Screen simulation={simulation} />
+    <div className="">
+      <h1 className="text-4xl text-center">Simulvolve</h1>
+      <Screen simulation={simulation} />
+    </div>
   )
 }

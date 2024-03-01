@@ -1,7 +1,9 @@
 use rand::Rng;
+use rand::RngCore;
 
 pub use self::layer_topology::*;
 use self::{layer::*, neuron::*};
+use std::iter::once;
 
 mod layer;
 mod layer_topology;
@@ -18,15 +20,40 @@ impl Network {
         Self { layers }
     }
 
-    pub fn random(layers: &[LayerTopology]) -> Self {
+    pub fn random(rng: &mut dyn RngCore, layers: &[LayerTopology]) -> Self {
         assert!(layers.len() > 1);
 
         let layers = layers
             .windows(2)
-            .map(|layers| Layer::random(layers[0].neurons, layers[1].neurons))
+            .map(|layers| Layer::random(rng, layers[0].neurons, layers[1].neurons))
             .collect();
 
         Self { layers }
+    }
+
+    pub fn from_weights(layers: &[LayerTopology], weights: impl IntoIterator<Item = f32>) -> Self {
+        assert!(layers.len() > 1);
+
+        let mut weights = weights.into_iter();
+
+        let layers = layers
+            .windows(2)
+            .map(|layers| Layer::from_weights(layers[0].neurons, layers[1].neurons, &mut weights))
+            .collect();
+
+        if weights.next().is_some() {
+            panic!("got too many weights");
+        }
+
+        Self::new(layers)
+    }
+
+    pub fn weights(&self) -> impl Iterator<Item = f32> + '_ {
+        self.layers
+            .iter()
+            .flat_map(|layer| layer.neurons.iter())
+            .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
+            .cloned()
     }
 
     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {

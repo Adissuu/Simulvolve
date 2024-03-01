@@ -12,8 +12,8 @@ export const Screen = ({ simulation }: Props) => {
     }
 
     return (
-        <div className="text-xl text-red-500 w-screen px-12">
-            <canvas className="bg-red-500 w-full rounded">
+        <div className="text-xl text-red-500">
+            <canvas className="bg-red-500 h-full w-full rounded">
                 {animals.map((animal: any, i: number) => {
                     createAnimal(animal);
                 })}

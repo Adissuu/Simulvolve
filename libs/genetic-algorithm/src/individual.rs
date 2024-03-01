@@ -1,6 +1,7 @@
 use crate::Chromosome;
 
 pub trait Individual {
+    fn score(&self) -> u32;
     fn create(chromosome: Chromosome) -> Self;
     fn chromosome(&self) -> &Chromosome;
     fn fitness(&self) -> f32;

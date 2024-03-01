@@ -16,11 +16,21 @@ impl Layer {
         Self { neurons }
     }
 
-    pub fn random(input_size: usize, output_size: usize) -> Self {
-        let random = &mut rand::thread_rng();
-
+    pub fn from_weights(
+        input_size: usize,
+        output_size: usize,
+        weights: &mut dyn Iterator<Item = f32>,
+    ) -> Self {
         let neurons = (0..output_size)
-            .map(|_| Neuron::random(random, input_size))
+            .map(|_| Neuron::from_weights(input_size, weights))
+            .collect();
+
+        Self::new(neurons)
+    }
+
+    pub fn random(rng: &mut dyn RngCore, input_size: usize, output_size: usize) -> Self {
+        let neurons = (0..output_size)
+            .map(|_| Neuron::random(rng, input_size))
             .collect();
 
         Self::new(neurons)

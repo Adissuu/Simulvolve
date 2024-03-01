@@ -1,5 +1,7 @@
 #![feature(impl_trait_in_assoc_type)]
-pub use self::{chromosome::*, crossover::*, individual::*, mutation::*, selection::*};
+pub use self::{
+    chromosome::*, crossover::*, individual::*, mutation::*, selection::*, statistics::*,
+};
 
 use rand::RngCore;
 
@@ -8,6 +10,7 @@ mod crossover;
 mod individual;
 mod mutation;
 mod selection;
+mod statistics;
 
 pub struct GeneticAlgorithm<S, C, M> {
     selection_method: S,
@@ -29,28 +32,26 @@ where
         }
     }
 
-    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> Vec<I>
+    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> (Vec<I>, Statistics)
     where
         I: Individual,
     {
-        assert!(population.len() > 1);
+        assert!(!population.is_empty());
 
-        (0..population.len())
+        let new_population = (0..population.len())
             .map(|_| {
-                // Selection
                 let parent_a = self.selection_method.select(rng, population).chromosome();
-
                 let parent_b = self.selection_method.select(rng, population).chromosome();
 
-                // Crossover
                 let mut child = self.crossover_method.crossover(rng, parent_a, parent_b);
-                // Mutation
+
                 self.mutation_method.mutate(rng, &mut child);
 
-                // Convert chromosome to individual
                 I::create(child)
             })
-            .collect()
+            .collect();
+
+        (new_population, Statistics::new(population))
     }
 }
 
