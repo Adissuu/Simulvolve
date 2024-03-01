@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 
       <main className={''}>
         <div className="text-red-500">
-          <h1 className="text-4xl">Simulvolve</h1>
+          <h1 className="text-4xl text-center">Simulvolve</h1>
           <SimulvolveWindow />
         </div>
       </main>

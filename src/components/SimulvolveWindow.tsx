@@ -1,6 +1,6 @@
 import { useContext } from "react"
-
 import { WASMContext } from "../context/WASM"
+import { Screen } from "./game/Screen"
 
 export const SimulvolveWindow = () => {
   const ctx = useContext(WASMContext)
@@ -12,7 +12,7 @@ export const SimulvolveWindow = () => {
   const animals = simulation.world().animals;
   console.log(animals)
 
-  return <p className="text-xl text-red-500">
-    hello
-  </p>
+  return (
+    <Screen simulation={simulation} />
+  )
 }
