@@ -17,7 +17,7 @@ export const WASMContextProvider: React.FC<WASMContextProviderProps> = ({
   useMountEffectOnce(() => {
     (async () => {
       const wasm = await import("../../libs/simulation-wasm/pkg");
-      await wasm.default();
+      await new wasm.Games()
       setState({ wasm });
     })()
   })

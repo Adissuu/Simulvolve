@@ -1,17 +1,15 @@
-use crate::{brain::*, config::*, eye::*, snake::*};
-use lib_genetic_algorithm as ga;
 use lib_neural_network as nn;
+use lib_genetic_algorithm as ga;
+use crate::{eye::*, snake::*};
 
-use nalgebra as na;
 use rand::Rng;
+use nalgebra as na;
 
-pub mod brain;
-pub mod config;
 pub mod eye;
 pub mod snake;
 
 /// Gaussian Mutation chance of mutation
-const MUTATION_CHANCE: f32 = 0.5;
+const MUTATION_CHANCE: f64 = 0.5;
 /// Gaussian Mutation magnitude of mutation
 const MUTATION_COEFF: f32 = 0.5;
 /// The n-th best snakes saved by the genetic algorithm
@@ -24,32 +22,26 @@ const APPLE_LIFETIME_GAIN: i32 = 50;
 
 pub struct Games {
     games: Vec<Game>,
-    genetic_algorithm: ga::GeneticAlgorithm<
-        ga::RouletteWheelSelection,
-        ga::UniformCrossover,
-        ga::GaussianMutation,
-    >,
+    genetic_algorithm: ga::GeneticAlgorithm<ga::RouletteWheelSelection>,
     age: u32,
-    pub generation: usize,
+    pub generation: usize
 }
 
 impl Games {
     /// Initialises a new simulation, with random games inside.
     pub fn new(number_games: u32, width: u32, height: u32) -> Self {
-        let games = (0..number_games)
-            .map(|_| Game::new(width, height))
-            .collect();
+        let games = (0..number_games).map(|_| Game::new(width, height)).collect();
 
-        Self {
+        Self { 
             games,
             genetic_algorithm: ga::GeneticAlgorithm::new(
                 ga::RouletteWheelSelection::new(),
-                ga::UniformCrossover::new(1),
+                ga::KPointsCrossover::new(1),
                 ga::GaussianMutation::new(MUTATION_CHANCE, MUTATION_COEFF),
-                SAVE_BESTS,
+                SAVE_BESTS
             ),
             age: 0,
-            generation: 0,
+            generation: 0
         }
     }
 
@@ -57,7 +49,7 @@ impl Games {
         &self.games
     }
 
-    /// Move each game that is not yet lost one tick forward.
+    /// Move each game that is not yet lost one tick forward. 
     /// Returns `None` if the population did not evolve, and `Some(stats)` if it did.
     pub fn step(&mut self) -> Option<ga::Statistics> {
         self.age += 1;
@@ -112,9 +104,7 @@ impl Games {
     /// Fast-forward to the next generation.
     pub fn train(&mut self) -> ga::Statistics {
         loop {
-            if let Some(stats) = self.step() {
-                return stats;
-            }
+            if let Some(stats) = self.step() { return stats; }
         }
     }
 }
@@ -125,7 +115,7 @@ pub struct Game {
     apple: (u32, u32),
     pub snake: Snake,
     lost: bool,
-    direction: Direction4,
+    direction: Direction4
 }
 
 impl Game {
@@ -139,7 +129,7 @@ impl Game {
             apple: Game::new_apple_position(width, height, &snake.body),
             snake: snake,
             lost: false,
-            direction: Direction4::Right,
+            direction: Direction4::Right
         }
     }
 
@@ -181,16 +171,10 @@ impl Game {
         }
 
         /* Process vision */
-        let vision =
-            self.snake
-                .eye
-                .process_vision(&self.snake.body, self.apple, self.width, self.height);
+        let vision = self.snake.eye.process_vision(&self.snake.body, self.apple, self.width, self.height);
 
         /* Process brain */
-        let directions_activation = self
-            .snake
-            .brain
-            .feed_forward(na::DVector::from(vision.to_vec()));
+        let directions_activation = self.snake.brain.feed_forward(na::DVector::from(vision.to_vec()));
         // Choose the index of the maximum activation
         let mut maxi = (0, directions_activation[0]);
         for i in 1..directions_activation.shape().0 {
@@ -208,29 +192,22 @@ impl Game {
     pub fn move_snake(&mut self, direction: Direction4) {
         let incrementer = direction.incrementer();
 
-        // The old position of the end of the tail.
+        // The old position of the end of the tail. 
         // Used when the tail must grown.
         let end_tail = self.snake.body[self.snake.body.len() - 1];
 
         // The new position of the head after movement.
-        let moved_head = (
-            self.snake.body[0].0 as i32 + incrementer.0,
-            self.snake.body[0].1 as i32 + incrementer.1,
-        );
+        let moved_head = (self.snake.body[0].0 as i32 + incrementer.0, self.snake.body[0].1 as i32 + incrementer.1);
 
         // If the new head of the snake is out of the grid, the game is lost.
-        if !(0 <= moved_head.0
-            && moved_head.0 < self.width as i32
-            && 0 <= moved_head.1
-            && moved_head.1 < self.height as i32)
-        {
+        if !(0 <= moved_head.0 && moved_head.0 < self.width as i32 && 0 <= moved_head.1 && moved_head.1 < self.height as i32)  {
             self.loose();
             return;
-        }
+        } 
 
         // Move the tail: each bit takes the position of the previous bit.
         for i in (1..self.snake.body.len()).rev() {
-            self.snake.body[i] = self.snake.body[i - 1];
+            self.snake.body[i] = self.snake.body[i-1];
         }
 
         // Move the head.
@@ -238,18 +215,15 @@ impl Game {
 
         /* Handle collisions with the tail */
         let (x, y) = moved_head;
-        for (tx, ty) in self.snake.body.iter().skip(1) {
-            // for each bit different of the head
-            if x == *tx as i32 && y == *ty as i32 {
-                // if head == bit
+        for (tx, ty) in self.snake.body.iter().skip(1) { // for each bit different of the head
+            if x == *tx as i32 && y == *ty as i32 { // if head == bit
                 self.loose();
                 return;
             }
         }
 
         /* Handle collisions with the apple */
-        if x == self.apple.0 as i32 && y == self.apple.1 as i32 {
-            // if head == apple
+        if x == self.apple.0 as i32 && y == self.apple.1 as i32 { // if head == apple
             // Increase tail size
             self.snake.body.push(end_tail);
 
@@ -295,7 +269,7 @@ impl From<usize> for Direction4 {
             1 => Up,
             2 => Left,
             3 => Down,
-            _ => panic!("Impossible direction returned by the neural network."),
+            _ => panic!("Impossible direction returned by the neural network.")
         }
     }
 }
@@ -332,7 +306,7 @@ mod test {
         #[test]
         fn step() {
             let mut games = Games::new(100, 30, 20);
-
+            
             for _ in 0..10 {
                 games.step();
             }
@@ -345,7 +319,7 @@ mod test {
         #[test]
         fn loose_game() {
             let mut game = Game::new(3, 3);
-            game.apple = (0, 0);
+            game.apple = (0,0);
             game.snake.body = vec![(1, 1)];
 
             game.move_snake(Direction4::Down);

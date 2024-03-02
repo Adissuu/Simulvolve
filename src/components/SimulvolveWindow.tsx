@@ -8,8 +8,8 @@ export const SimulvolveWindow = () => {
     return <>...</>
   }
 
-  const simulation = new ctx.wasm.Simulation();
-  const animals = simulation.world().animals;
+  const simulation = new ctx.wasm.Games();
+  const animals = simulation.games;
   console.log(animals)
 
   return (

@@ -10,6 +10,8 @@ wasm-bindgen = { version = "0.2.91", features = ["serde-serialize"] }
 serde = { version = "1.0.197", features = ["derive"] }
 
 lib-simulation = { path = "../simulation" }
+lib-genetic-algorithm = { path = "../genetic-algorithm" }
+serde-wasm-bindgen = "0.6.5"
 
 [lib]
 crate-type = ["cdylib"]

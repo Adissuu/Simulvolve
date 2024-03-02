@@ -1,53 +1,65 @@
-#![feature(impl_trait_in_assoc_type)]
-pub use self::{
-    chromosome::*, crossover::*, individual::*, mutation::*, selection::*, statistics::*,
-};
+pub use crate::{selection_method::*, crossover_method::*, mutation_method::*, statistics::*};
 
-use rand::RngCore;
+pub mod selection_method;
+pub mod crossover_method;
+pub mod mutation_method;
+pub mod statistics;
 
-mod chromosome;
-mod crossover;
-mod individual;
-mod mutation;
-mod selection;
-mod statistics;
-
-pub struct GeneticAlgorithm<S, C, M> {
+pub struct GeneticAlgorithm<S> 
+    where S: SelectionMethod
+{
     selection_method: S,
-    crossover_method: C,
-    mutation_method: M,
+    crossover_method: Box<dyn CrossoverMethod>,
+    mutation_method: Box<dyn MutationMethod>,
+    save_bests: usize
 }
 
-impl<S, C, M> GeneticAlgorithm<S, C, M>
-where
-    S: SelectionMethod,
-    C: CrossoverMethod,
-    M: MutationMethod,
+impl<S> GeneticAlgorithm<S> 
+    where S: SelectionMethod 
 {
-    pub fn new(selection_method: S, crossover_method: C, mutation_method: M) -> Self {
-        Self {
-            selection_method,
-            crossover_method,
-            mutation_method,
+    pub fn new(
+        selection_method: S,
+        crossover_method: impl CrossoverMethod + 'static,
+        mutation_method: impl MutationMethod + 'static,
+        save_bests: usize
+        ) -> Self {
+        Self { 
+            selection_method, 
+            crossover_method: Box::new(crossover_method),
+            mutation_method: Box::new(mutation_method),
+            save_bests
         }
     }
 
-    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> (Vec<I>, Statistics)
-    where
-        I: Individual,
+    /// Given a population of individuals, selects, reproduces, and mutates the population.
+    pub fn evolve<I>(&self, population: &mut [I]) -> (Vec<I>, Statistics)
+        where I: Individual + Clone
     {
         assert!(!population.is_empty());
 
-        let new_population = (0..population.len())
-            .map(|_| {
-                let parent_a = self.selection_method.select(rng, population).chromosome();
-                let parent_b = self.selection_method.select(rng, population).chromosome();
+        // Sort the population by decreasing fitness
+        population.sort_by(|i1, i2| i1.fitness().partial_cmp(&i2.fitness()).unwrap().reverse() );
 
-                let mut child = self.crossover_method.crossover(rng, parent_a, parent_b);
+        let new_population = population
+            .iter()
+            .enumerate()
+            .map(|(index, individual)| {
+                if index < self.save_bests {
+                    individual.clone()
+                } else {
+                    // Selects two parents and extracts their genome
+                    let parent_a = self.selection_method.select(population).genome();
+                    let parent_b = self.selection_method.select(population).genome();
 
-                self.mutation_method.mutate(rng, &mut child);
+                    // Apply crossover method to parents to create the genome of a child
+                    let mut child = self.crossover_method.crossover(&parent_a, &parent_b);
 
-                I::create(child)
+                    // Mutates the child's genome
+                    self.mutation_method.mutate(&mut child);
+
+                    // Convert the genome back to an individual
+                    I::create(child)
+                }
             })
             .collect();
 
@@ -55,46 +67,15 @@ where
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use rand::SeedableRng;
-    use rand_chacha::ChaCha8Rng;
-
-    fn create_individual(genes: &[f32]) -> TestIndividual {
-        let chromosome = genes.iter().cloned().collect();
-
-        TestIndividual::create(chromosome)
-    }
-
-    #[test]
-    fn test_evolve() {
-        let mut rng = ChaCha8Rng::from_seed(Default::default());
-
-        let genetic_algorithm = GeneticAlgorithm::new(
-            RouletteWheelSelection::default(),
-            UniformCrossover::new(),
-            GaussianMutation::new(0.5, 0.5),
-        );
-
-        let mut population = vec![
-            create_individual(&[0.0, 0.0, 0.0]), // 0
-            create_individual(&[4.0, 3.0, 2.0]), // 9
-            create_individual(&[1.0, 2.0, 4.0]), // 7
-            create_individual(&[1.0, 2.0, 3.0]), // 6
-        ];
-
-        for _ in 0..20 {
-            population = genetic_algorithm.evolve(&mut rng, &population);
-        }
-
-        let expected_population = vec![
-            create_individual(&[0.7887951, 2.8633232, 5.244236]), // 8.8963543
-            create_individual(&[0.66027343, 3.0064118, 5.348094]), // 9.01477923
-            create_individual(&[1.0781169, 3.2106802, 5.244236]), // 9.5330331
-            create_individual(&[0.6972294, 3.0064118, 5.745471]), // 9.4491122
-        ];
-
-        assert_eq!(population, expected_population);
-    }
+pub trait Individual {
+    /// The actual score to the game, similar but not equal to fitness.
+    /// For example, the number of apples eaten.
+    fn score(&self) -> u32;
+    /// The fitness function, two rank the effectivness of an individual's brain.
+    /// For example, an expression that combines score and lifetime.
+    fn fitness(&self) -> u32;
+    /// Convert an individual to its genome, an array that contains weights and biases of the brain.
+    fn genome(&self) -> &Vec<f32>;
+    /// Convert a genome back to an individual.
+    fn create(genom: Vec<f32>) -> Self;
 }
