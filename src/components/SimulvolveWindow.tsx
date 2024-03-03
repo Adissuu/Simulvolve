@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { WASMContext } from "../context/WASM"
-import { Screen } from "./game/Screen"
+import Screen from "./game/Screen"
 
 export const SimulvolveWindow = () => {
   const ctx = useContext(WASMContext)
@@ -9,8 +9,6 @@ export const SimulvolveWindow = () => {
   }
 
   const simulation = new ctx.wasm.Games();
-  const animals = simulation.games;
-  console.log(animals)
 
   return (
     <div className="">
