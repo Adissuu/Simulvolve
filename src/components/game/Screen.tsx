@@ -13,8 +13,10 @@ const Screen = ({ simulation }: Props) => {
             const context = canvas.getContext('2d');
 
             // Example: Draw a red rectangle
-            context.fillStyle = 'red';
-            context.fillRect(10, 10, 100, 50);
+            if (context) {
+                context.fillStyle = 'red';
+                context.fillRect(10, 10, 100, 50);
+            }
         }
     }, []);
 
