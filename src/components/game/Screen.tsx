@@ -87,25 +87,39 @@ const Screen = ({ simulation }: Props) => {
         console.log("Generation: " + simulation.generation());
         console.log("Best Score (gen.): " + simulation.best_score());
 
-        console.log("Min. Fitness: " + Math.round(simulation.min_fitness())) /// //FITNESS_UNITS));
-        console.log("Max. Fitness: " + Math.round(simulation.max_fitness()))
-        // FITNESS_UNITS);
-        console.log("Average Fitness: " + Math.round(simulation.avg_fitness()))
-        // FITNESS_UNITS);
+        console.log("Min. Fitness: " + Math.round(simulation.min_fitness() /FITNESS_UNITS));
+        console.log("Max. Fitness: " + Math.round(simulation.max_fitness() / FITNESS_UNITS));
+        console.log("Average Fitness: " + Math.round(simulation.avg_fitness() / FITNESS_UNITS));
 
         if (!gamePaused) {
-            setTimeout(function () { requestAnimationFrame(redraw) }, FRAME_DELAY);
+            setTimeout(function () { requestAnimationFrame(redraw) }, 1);
         }
     }
 
     useEffect(() => {
+        const viewport = canvasRef.current;
 
-    }, []);
+        if (!viewport){return;}
+
+        // Adapt the viewport scale to avoid pixelized images.
+        const viewportWidth = viewport.width;
+        const viewportHeight = viewport.height;
+
+        const viewportScale = window.devicePixelRatio || 1;
+
+        viewport.width = viewportWidth * viewportScale;
+        viewport.height = viewportHeight * viewportScale;
+
+        viewport.style.width = viewportWidth + 'px';
+        viewport.style.height = viewportHeight + 'px';
+
+        redraw()
+    });
 
     const games_list = simulation.games();
     const width = games_list[0].width;
     const height = games_list[0].height;
-
+    
     return (
         <div className="text-xl text-red-500">
             <canvas ref={canvasRef} className=" h-full w-full rounded" />
