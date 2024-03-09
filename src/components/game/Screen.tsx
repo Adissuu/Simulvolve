@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 type Props = {
     simulation: any;
@@ -9,11 +9,11 @@ const Screen = ({ simulation }: Props) => {
     const [gamePaused, setGamePaused] = useState(false);
     const gamePausedRef = useRef(gamePaused);
 
-    const FRAME_DELAY = 0;
+    const FRAME_DELAY = 50;
     const GENERATIONS_TRAIN = 80;
     const FITNESS_UNITS = 10000;
 
-    function redraw() {
+    const redraw = useCallback(() => {
         let games = simulation.games();
         const canvas = canvasRef.current;
         let ctxt: CanvasRenderingContext2D | null
@@ -27,7 +27,7 @@ const Screen = ({ simulation }: Props) => {
         simulation.step();
 
         // Draw snake
-        const snake = games_list[0].snake;
+        const snake = games[0].snake;
         if (ctxt == null) { return; }
 
         ctxt.fillStyle = 'rgb(255, 255, 255)';
@@ -49,7 +49,7 @@ const Screen = ({ simulation }: Props) => {
         }
 
         // Draw eyes
-        const direction = games_list[0].direction;
+        const direction = games[0].direction;
         ctxt.fillStyle = 'rgb(0, 0, 0)';
 
         const x0 = snake[0][0];
@@ -77,7 +77,7 @@ const Screen = ({ simulation }: Props) => {
         }
 
         // Draw apple
-        const apple = games_list[0].apple;
+        const apple = games[0].apple;
 
         ctxt.fillStyle = 'rgb(255, 0, 0)';
         ctxt.beginPath();
@@ -93,9 +93,9 @@ const Screen = ({ simulation }: Props) => {
         // console.log("Average Fitness: " + Math.round(simulation.avg_fitness() / FITNESS_UNITS));
 
         if (!gamePausedRef.current) {
-            requestAnimationFrame(redraw);
+            setTimeout(function () { requestAnimationFrame(redraw) }, FRAME_DELAY);
         }
-    }
+    }, [simulation, gamePausedRef]);
 
     useEffect(() => {
         const viewport = canvasRef.current;
@@ -110,12 +110,12 @@ const Screen = ({ simulation }: Props) => {
 
         viewport.width = viewportWidth * viewportScale;
         viewport.height = viewportHeight * viewportScale;
-
+        console.log(viewport.width, viewport.height);
         viewport.style.width = viewportWidth + 'px';
         viewport.style.height = viewportHeight + 'px';
 
         redraw()
-    });
+    }, [redraw]);
 
     const games_list = simulation.games();
     const width = games_list[0].width;
@@ -123,7 +123,7 @@ const Screen = ({ simulation }: Props) => {
 
     return (
         <div className="text-xl text-red-500">
-            <canvas ref={canvasRef} className=" h-full w-full rounded" />
+            <canvas ref={canvasRef} width="700" height="700" className=" h-full w-full rounded border-2 border-red-500" />
             <button onClick={() => {
                 setGamePaused(prevGamePaused => {
                     gamePausedRef.current = !prevGamePaused;

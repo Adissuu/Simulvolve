@@ -8,7 +8,6 @@ const Home: NextPage = () => {
     <div className={''}>
       <Head>
         <title>Simulvolve</title>
-        <link rel="stylesheet" href="./styles.css"></link>
         <meta name="description" content="Next.JS with WebAssembly" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
