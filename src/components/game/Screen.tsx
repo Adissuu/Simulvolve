@@ -7,6 +7,7 @@ type Props = {
 const Screen = ({ simulation }: Props) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [gamePaused, setGamePaused] = useState(false);
+    const gamePausedRef = useRef(gamePaused);
 
     const FRAME_DELAY = 0;
     const GENERATIONS_TRAIN = 80;
@@ -85,21 +86,21 @@ const Screen = ({ simulation }: Props) => {
 
         // Update the labels
         console.log("Generation: " + simulation.generation());
-        console.log("Best Score (gen.): " + simulation.best_score());
+        // console.log("Best Score (gen.): " + simulation.best_score());
 
-        console.log("Min. Fitness: " + Math.round(simulation.min_fitness() /FITNESS_UNITS));
-        console.log("Max. Fitness: " + Math.round(simulation.max_fitness() / FITNESS_UNITS));
-        console.log("Average Fitness: " + Math.round(simulation.avg_fitness() / FITNESS_UNITS));
+        // console.log("Min. Fitness: " + Math.round(simulation.min_fitness() / FITNESS_UNITS));
+        // console.log("Max. Fitness: " + Math.round(simulation.max_fitness() / FITNESS_UNITS));
+        // console.log("Average Fitness: " + Math.round(simulation.avg_fitness() / FITNESS_UNITS));
 
-        if (!gamePaused) {
-            setTimeout(function () { requestAnimationFrame(redraw) }, 1);
+        if (!gamePausedRef.current) {
+            requestAnimationFrame(redraw);
         }
     }
 
     useEffect(() => {
         const viewport = canvasRef.current;
 
-        if (!viewport){return;}
+        if (!viewport) { return; }
 
         // Adapt the viewport scale to avoid pixelized images.
         const viewportWidth = viewport.width;
@@ -119,11 +120,17 @@ const Screen = ({ simulation }: Props) => {
     const games_list = simulation.games();
     const width = games_list[0].width;
     const height = games_list[0].height;
-    
+
     return (
         <div className="text-xl text-red-500">
             <canvas ref={canvasRef} className=" h-full w-full rounded" />
-            <button onClick={() => setGamePaused(!gamePaused)} >
+            <button onClick={() => {
+                setGamePaused(prevGamePaused => {
+                    gamePausedRef.current = !prevGamePaused;
+                    console.log(gamePausedRef.current);
+                    return !prevGamePaused;
+                });
+            }} >
                 {gamePaused ? "Resume" : "Pause"}
             </button>
         </div>
