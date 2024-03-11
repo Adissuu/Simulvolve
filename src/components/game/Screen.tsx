@@ -102,19 +102,22 @@ const Screen = ({ simulation }: Props) => {
 
         if (!viewport) { return; }
 
-        // Adapt the viewport scale to avoid pixelized images.
-        const viewportWidth = viewport.width;
-        const viewportHeight = viewport.height;
+        const updateViewportSize = () => {
+            const viewportScale = window.devicePixelRatio || 1;
+            const size = Math.min(window.innerWidth, window.innerHeight) * viewportScale;
 
-        const viewportScale = window.devicePixelRatio || 1;
+            viewport.width = size;
+            viewport.height = size;
+            viewport.style.width = (size - (size * 0.1)) / viewportScale + 'px';
+            viewport.style.height = (size - (size * 0.1)) / viewportScale + 'px';
 
-        viewport.width = viewportWidth * viewportScale;
-        viewport.height = viewportHeight * viewportScale;
-        console.log(viewport.width, viewport.height);
-        viewport.style.width = viewportWidth + 'px';
-        viewport.style.height = viewportHeight + 'px';
+            redraw();
+        };
 
-        redraw()
+        window.addEventListener('resize', updateViewportSize);
+        updateViewportSize();
+
+        return () => window.removeEventListener('resize', updateViewportSize);
     }, [redraw]);
 
     const games_list = simulation.games();
@@ -122,18 +125,17 @@ const Screen = ({ simulation }: Props) => {
     const height = games_list[0].height;
 
     return (
-        <div className="text-xl text-red-500">
-            <canvas ref={canvasRef} width="700" height="700" className=" h-full w-full rounded border-2 border-red-500" />
-            <button onClick={() => {
-                setGamePaused(prevGamePaused => {
-                    gamePausedRef.current = !prevGamePaused;
-                    console.log(gamePausedRef.current);
-                    return !prevGamePaused;
-                });
-            }} >
+        <><div className="text-xl text-red-500 flex  justify-center items-center ">
+            <canvas ref={canvasRef} width="700" height="700" className="rounded border-2 border-red-500" />
+        </div><button onClick={() => {
+            setGamePaused(prevGamePaused => {
+                gamePausedRef.current = !prevGamePaused;
+                console.log(gamePausedRef.current);
+                return !prevGamePaused;
+            });
+        }}>
                 {gamePaused ? "Resume" : "Pause"}
-            </button>
-        </div>
+            </button></>
     );
 };
 
