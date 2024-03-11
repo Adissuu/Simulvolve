@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import PauseResumeButton from '../Statistics/PauseResumeButton';
 
 type Props = {
     simulation: any;
@@ -92,6 +93,7 @@ const Screen = ({ simulation }: Props) => {
         // console.log("Max. Fitness: " + Math.round(simulation.max_fitness() / FITNESS_UNITS));
         // console.log("Average Fitness: " + Math.round(simulation.avg_fitness() / FITNESS_UNITS));
 
+
         if (!gamePausedRef.current) {
             setTimeout(function () { requestAnimationFrame(redraw) }, FRAME_DELAY);
         }
@@ -125,17 +127,12 @@ const Screen = ({ simulation }: Props) => {
     const height = games_list[0].height;
 
     return (
-        <><div className="text-xl text-red-500 flex  justify-center items-center ">
+        <div className="text-xl text-red-500 flex justify-center items-center ">
+            <div className="flex flex-col">
+                <PauseResumeButton gamePaused={gamePaused} setGamePaused={setGamePaused} gamePausedRef={gamePausedRef} redraw={redraw} />
+            </div>
             <canvas ref={canvasRef} width="700" height="700" className="rounded border-2 border-red-500" />
-        </div><button onClick={() => {
-            setGamePaused(prevGamePaused => {
-                gamePausedRef.current = !prevGamePaused;
-                console.log(gamePausedRef.current);
-                return !prevGamePaused;
-            });
-        }}>
-                {gamePaused ? "Resume" : "Pause"}
-            </button></>
+        </div>
     );
 };
 

@@ -5,7 +5,7 @@ import { WASMContextProvider } from '../context/WASM'
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <ThemeProvider attribute="class">
+    <ThemeProvider attribute="class" defaultTheme="dark">
       <WASMContextProvider>
         <Component {...pageProps} />
       </WASMContextProvider>
