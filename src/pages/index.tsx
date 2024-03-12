@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={''}>
-        <div className="text-red-500 px-12 h-screen overflow-hidden">
+        <div className="text-blue-500 px-12 h-screen overflow-hidden">
           <SimulvolveWindow />
         </div>
       </main>

@@ -127,11 +127,11 @@ const Screen = ({ simulation }: Props) => {
     const height = games_list[0].height;
 
     return (
-        <div className="text-xl text-red-500 flex justify-center items-center ">
-            <div className="flex flex-col">
+        <div className="text-xl text-blue-500 flex justify-center items-center ">
+            <div className="flex flex-col mr-12">
                 <PauseResumeButton gamePaused={gamePaused} setGamePaused={setGamePaused} gamePausedRef={gamePausedRef} redraw={redraw} />
             </div>
-            <canvas ref={canvasRef} width="700" height="700" className="rounded border-2 border-red-500" />
+            <canvas ref={canvasRef} width="700" height="700" className="rounded border-2 border-blue-500" />
         </div>
     );
 };

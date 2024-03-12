@@ -21,7 +21,7 @@ const PauseResumeButton: FC<PauseResumeButtonProps> = ({ gamePaused, setGamePaus
     };
 
     return (
-        <button onClick={handleClick}>
+        <button onClick={handleClick} className='border border-blue-500 px-2 py-1 rounded-lg hover:bg-blue-500 hover:text-white'>
             {gamePaused ? "Resume" : "Pause"}
         </button>
     );
