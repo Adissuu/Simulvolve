@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import PauseResumeButton from '../Statistics/PauseResumeButton';
+import Score from '../Statistics/Score';
 
 type Props = {
     simulation: any;
@@ -8,6 +9,7 @@ type Props = {
 const Screen = ({ simulation }: Props) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [gamePaused, setGamePaused] = useState(false);
+    const [score, setScore] = useState(0);
     const gamePausedRef = useRef(gamePaused);
 
     const FRAME_DELAY = 50;
@@ -87,7 +89,7 @@ const Screen = ({ simulation }: Props) => {
 
         // Update the labels
         console.log("Generation: " + simulation.generation());
-        // console.log("Best Score (gen.): " + simulation.best_score());
+        setScore(simulation.best_score());
 
         // console.log("Min. Fitness: " + Math.round(simulation.min_fitness() / FITNESS_UNITS));
         // console.log("Max. Fitness: " + Math.round(simulation.max_fitness() / FITNESS_UNITS));
@@ -129,6 +131,7 @@ const Screen = ({ simulation }: Props) => {
     return (
         <div className="text-xl text-blue-500 flex justify-center items-center ">
             <div className="flex flex-col mr-12">
+                <Score score={score} />
                 <PauseResumeButton gamePaused={gamePaused} setGamePaused={setGamePaused} gamePausedRef={gamePausedRef} redraw={redraw} />
             </div>
             <canvas ref={canvasRef} width="700" height="700" className="rounded border-2 border-blue-500" />
