@@ -6,7 +6,7 @@ type Props = {
 
 const Score = ({ score }: Props) => {
     return (
-        <div className='text-white'>Last gen&apos;'s best score: {score}</div>
+        <div className='text-white'>Last gen&apos;s best score: {score}</div>
     )
 }
 
